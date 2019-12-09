@@ -1,0 +1,25 @@
+version: "3.4"
+
+services:
+  app:
+    build: .
+    image: docker.prakashk.com/service/auth
+    container_name: services.auth
+    ports:
+      - 3000:5000 # modify the exported port as necessary
+    environment:
+      - PORT=5000 # this port is used to run the express app
+    # this will copy node_modules to src folder, otherwise node_modules will be wipeed out as we don't
+    # have the node_modules in the host machine
+    command: /usr/src/app/entrypoint.sh prod
+
+  builder:
+    build: .
+    command: /usr/src/app/entrypoint.sh dev
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "5000:5000" # modify the exported port as necessary
+    environment:
+      - NODE_ENV=development
+      - PORT=5000 # this port is used to run the express app
